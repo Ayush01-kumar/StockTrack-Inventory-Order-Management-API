@@ -13,17 +13,28 @@ The ExpressGuard package was inspected at `../npm_package/ExpressGuard-`: it has
 
 ## Setup
 
-1. Create a PostgreSQL database named `stocktrack`.
-2. Copy `.env.example` to `.env` and set real local values. Use a random JWT secret of at least 32 characters and a long random API key. Choose a unique admin seed password of at least 12 characters.
-3. Install and generate Prisma Client:
+1. Install PostgreSQL and create a database named `stocktrack`. Make sure the database server is running.
+2. Create your private local environment file from the template:
 
    ```sh
-   npm install
+   cp .env.example .env
+   ```
+
+   Edit `.env` with your PostgreSQL username and password. Replace the example JWT secret and integration API key with random values; the JWT secret must be at least 32 characters and the API key at least 16 characters. Set a unique admin seed password of at least 12 characters. For example, generate a 32-byte random value with `openssl rand -hex 32` and use a separate generated value for each secret. Keep `.env` private: it is ignored by Git. `.env.example` contains placeholders only and should not contain real credentials.
+
+   `CORS_ORIGIN` should be the origin of a frontend that will call this API (for example, `http://localhost:5173` for a local Vite app). This project currently has no frontend; the value can be changed when you add one.
+
+3. Install dependencies and prepare the database:
+
+   ```sh
+   npm ci
    npm run db:generate
    npm run db:migrate -- --name init
    npm run db:seed
    npm run dev
    ```
+
+   `npm ci` requires the sibling ExpressGuard checkout at `../npm_package/ExpressGuard-` because it is referenced as a local dependency.
 
 The local dependency is recorded as `file:../npm_package/ExpressGuard-`. If ExpressGuard is published and you want to use that release instead, change that dependency in `package.json` to `@ayush_rajput/expressguard-toolkit@<verified-version>` and run `npm install`.
 
